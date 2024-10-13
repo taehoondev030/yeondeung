@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'HopePage.dart';
+import 'EndPage.dart';
 import 'SendHopePage.dart';
 
 class HelloPage extends StatelessWidget {
   const HelloPage({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+          decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Color(0xff07182C),
               Color(0xff110B69),
-            ]
-          )
+            ],
+          ),
         ),
         width: double.infinity,
         height: double.infinity,
@@ -27,30 +27,48 @@ class HelloPage extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: 300,
+              height: 250,
             ),
             Container(
-              margin: EdgeInsets.all(20),
-              child: Image.asset('assets/images/light.png', width: 200,),
+              margin: EdgeInsets.all(50),
+              child: Image.asset('assets/images/lantern.png', width: 180,),
             ),
             TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow.shade100)
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.yellow.shade100,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                onPressed: () {
-                  print("페이지를 이동합니다.");
-                  Get.to(()=>SendHopePage());
-                },
-                child: Text("🙏 마음 전하러 가기 🙏")
+              ),
+              onPressed: () {
+                print("페이지를 이동합니다.");
+                Get.to(() => SendHopePage());
+              },
+              child: Text("🙏 마음 전하러 가기 🙏",
+              style: TextStyle(
+                fontSize: 17.0,
+                fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            // Text("한줄 더 쓰기.", style: TextStyle(fontSize: 20, color: Colors.brown),),
-            GestureDetector(
-                    onTap: () {
-            print("지나갑니다");
-
-            Get.to(()=>HopePage());
-            },
-                child: Text("다음 페이지로 넘어가기", style: TextStyle(fontSize: 20, color: Colors.red),)),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.yellow.shade100,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
+              onPressed: () {
+                print("페이지를 이동합니다.");
+                Get.to(() => EndPage());
+              },
+              child: Text("🙏 마지막 페이지로 🙏",
+                style: TextStyle(
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.yeondeung.app-mergeDebugResources-24:/values/values.xml",
+            "outputFile": "com.example.yeondeung.app-mergeDebugResources-26:/values/values.xml",
             "map": [
                 {
                     "source": "C:\\Users\\taeho\\.gradle\\caches\\transforms-3\\010887bb3359843376c02ecf4bf2ef43\\transformed\\jetified-savedstate-1.2.1\\res\\values\\values.xml",
