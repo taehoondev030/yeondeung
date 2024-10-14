@@ -1,7 +1,7 @@
 class Hope {
   int? id;
   String? message;
-  String? date;
+  DateTime? date;
 
   Hope({this.id, this.message, this.date});
 
@@ -13,7 +13,7 @@ class Hope {
     return Hope(
         id: json['id'],
         message: json['message'],
-        date: json['created_at']
+        date: DateTime.parse(json['created_at'])
     );
   }
 }

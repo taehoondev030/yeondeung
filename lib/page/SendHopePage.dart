@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yeondeung/page/HelloPage.dart';
 import 'package:http/http.dart' as http;
-
 import '../model/wish.dart';
 import 'RisingHopePage.dart';
 
@@ -81,7 +80,7 @@ class _SendHopePageState extends State<SendHopePage> {
               duration: Duration(milliseconds: 300),
               child: IconButton(
                 onPressed: () {
-                  Get.to(() => HelloPage());
+                  Get.offAll(HelloPage());
                 },
                 icon: const Icon(Icons.close),
                 color: Colors.grey.shade300,
