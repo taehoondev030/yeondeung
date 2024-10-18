@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'EndPage.dart';
 import 'SendHopePage.dart';
 
 class HelloPage extends StatelessWidget {
@@ -9,9 +8,14 @@ class HelloPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 화면 크기를 가져오기 위한 MediaQuery
+    var screenSize = MediaQuery.of(context).size;
+    var screenWidth = screenSize.width;
+    var screenHeight = screenSize.height;
+
     return Scaffold(
       body: Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -27,45 +31,36 @@ class HelloPage extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: 250,
+              height: screenHeight * 0.3, // 전체 화면의 30%만큼 여백
             ),
             Container(
-              margin: EdgeInsets.all(50),
-              child: Image.asset('assets/images/lantern.png', width: 180,),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.yellow.shade100,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-              ),
-              onPressed: () {
-                print("페이지를 이동합니다.");
-                Get.to(() => SendHopePage());
-              },
-              child: Text("🙏 마음 전하러 가기 🙏",
-              style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-                ),
+              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+              child: Image.asset(
+                'assets/images/lantern.png',
+                width: screenWidth * 0.5,
               ),
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.yellow.shade100,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+            SizedBox(height: screenHeight * 0.05), // 이미지와 버튼 사이 여백
+            Container(
+              height: screenHeight * 0.055,
+              width: screenWidth * 0.6,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade50,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                print("페이지를 이동합니다.");
-                Get.to(() => EndPage());
-              },
-              child: Text("🙏 마지막 페이지로 🙏",
-                style: TextStyle(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
+                onPressed: () {
+                  print("페이지를 이동합니다.");
+                  Get.to(() => SendHopePage());
+                },
+                child: Text(
+                  "🙏 마음 전하러 가기 🙏",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.05, // 버튼 글자 크기를 화면 너비에 맞춤
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
