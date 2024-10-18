@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '';
-
-import '../model/user.dart';
 import 'LoginPage.dart';
+import '../model/user.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -51,68 +48,46 @@ class _SignUpPageState extends State<SignUpPage> {
         colorText: Colors.white,
       );
       Get.to(() => LoginPage()); // 로그인 페이지로 이동
-    } else if (response.statusCode == 400) { // 이메일 중복 오류 처리
-      final errorResponse = jsonDecode(response.body);
-      print(errorResponse);
-
-      if (errorResponse['email'] != null &&
-          errorResponse['email'][0] == "Enter a valid email address.") {
-          Get.snackbar(
-          '회원가입 실패',
-          '유효하지 않은 이메일 형식입니다.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      } else if (errorResponse['email'] != null &&
-          errorResponse['email'][0] == "user with this email already exists.") {
-        Get.snackbar(
-          '회원가입 실패',
-          '이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      } else if (errorResponse['password'] != null &&
-          errorResponse['password'][0] == "Ensure this field has at least 5 characters."){
-        Get.snackbar(
-          '회원가입 실패',
-          '비밀번호가 너무 짧습니다. 5글자 이상의 비밀번호를 설정해주세요.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      } else if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _nameController.text.isEmpty) {
-        Get.snackbar(
-          '회원가입 실패',
-          '공백인 필드가 있습니다. 모든 필드를 채워주세요.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      } else {
-        Get.snackbar(
-          '회원가입 실패',
-          '입력한 정보에 오류가 있습니다. 다시 시도해주세요.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    } else {  // 기타 오류 처리
-      print("Error: ${response.statusCode}");
-      Get.snackbar(
-        '회원가입 실패',
-        '회원가입에 실패했습니다. 다시 시도해주세요.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+    } else {
+      handleErrorResponse(response);
     }
+  }
+
+  void handleErrorResponse(http.Response response) {
+    final errorResponse = jsonDecode(response.body);
+    if (response.statusCode == 400) {
+      if (errorResponse['email'] != null && errorResponse['email'][0] == "Enter a valid email address.") {
+        showErrorSnackBar('유효하지 않은 이메일 형식입니다.');
+      } else if (errorResponse['email'] != null && errorResponse['email'][0] == "user with this email already exists.") {
+        showErrorSnackBar('이미 존재하는 이메일입니다.');
+      } else if (errorResponse['password'] != null && errorResponse['password'][0] == "Ensure this field has at least 5 characters.") {
+        showErrorSnackBar('비밀번호가 너무 짧습니다.');
+      } else if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _nameController.text.isEmpty) {
+        showErrorSnackBar('공백인 필드가 있습니다.');
+      } else {
+        showErrorSnackBar('입력한 정보에 오류가 있습니다.');
+      }
+    } else {
+      showErrorSnackBar('회원가입에 실패했습니다.');
+    }
+  }
+
+  void showErrorSnackBar(String message) {
+    Get.snackbar(
+      '회원가입 실패',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    var screenWidth = screenSize.width;
+    var screenHeight = screenSize.height;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -128,137 +103,120 @@ class _SignUpPageState extends State<SignUpPage> {
         width: double.infinity,
         height: double.infinity,
         child: GestureDetector(
-          onTap: FocusScope.of(context).unfocus,
+          onTap: () => FocusScope.of(context).unfocus(),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 100,
-                ),
+                SizedBox(height: screenHeight * 0.1), // 상단 여백
                 Text(
-                  "연등",
+                  "연 등",
                   style: TextStyle(
                     color: Colors.yellow,
-                    fontSize: 80,
-                    // fontWeight: FontWeight.bold,
+                    fontSize: screenWidth * 0.15, // 텍스트 크기를 화면 너비에 맞춤
                   ),
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 100,
-                ),
+                SizedBox(height: screenHeight * 0.1), // 텍스트 아래 여백
                 Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelText: '이름',
                       hintText: '이름을 입력하세요.',
-                      labelStyle: TextStyle(
-                          color: Colors.white
-                      ),
+                      labelStyle: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(width: 1, color: Colors.white),
-                      ),
-                      enabledBorder:OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide(width: 1, color: Colors.yellow),
                       ),
-                      border: OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(width: 1, color: Colors.yellow),
                       ),
                     ),
                     style: TextStyle(color: Colors.white),
                   ),
-                  padding: EdgeInsets.fromLTRB(30, 20, 30, 10),
                 ),
+                SizedBox(height: screenHeight * 0.03), // 필드 간 여백
                 Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: '이메일',
                       hintText: '이메일을 입력하세요.',
-                      labelStyle: TextStyle(
-                          color: Colors.white
-                      ),
+                      labelStyle: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide(width: 1, color: Colors.yellow),
                       ),
-                      enabledBorder:OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide(width: 1, color: Colors.yellow),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
                     ),
                     style: TextStyle(color: Colors.white),
                     keyboardType: TextInputType.emailAddress,
                   ),
-                  padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
                 ),
+                SizedBox(height: screenHeight * 0.03),
                 Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: TextField(
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: '비밀번호',
                       hintText: '비밀번호를 입력하세요.',
-                      labelStyle: TextStyle(
-                          color: Colors.white
-                      ),
+                      labelStyle: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide(width: 1, color: Colors.yellow),
                       ),
-                      enabledBorder:OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide: BorderSide(width: 1, color: Colors.yellow),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
                     ),
                     style: TextStyle(color: Colors.white),
-                    keyboardType: TextInputType.emailAddress,
                     obscureText: true,
                   ),
-                  padding: EdgeInsets.fromLTRB(30, 10, 30, 30),
                 ),
+                SizedBox(height: screenHeight * 0.05), // 입력 필드와 버튼 사이 여백
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 50
-                    ),
                     TextButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.yellow.shade100,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.07,
+                          vertical: screenHeight * 0.015,
                         ),
                       ),
                       onPressed: () {
                         Get.to(() => LoginPage());
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                        child: Text("로그인",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "로그인",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 50,
-                    ),
+                    SizedBox(width: screenWidth * 0.1), // 버튼 간 여백
                     TextButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.yellow.shade100,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.05,
+                          vertical: screenHeight * 0.015,
                         ),
                       ),
                       onPressed: () {
@@ -271,13 +229,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           addUserToServer(user);
                         });
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                        child: Text("회원가입",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "회원가입",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ),

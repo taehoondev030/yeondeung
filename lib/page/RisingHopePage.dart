@@ -36,10 +36,10 @@ class _RisingHopePageState extends State<RisingHopePage> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter, 
-                end: Alignment.bottomCenter, 
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xff07182C), 
+                  Color(0xff07182C),
                   Color(0xff110B69),
                 ],
               ),

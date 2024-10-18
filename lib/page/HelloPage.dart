@@ -31,7 +31,7 @@ class HelloPage extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: screenHeight * 0.3, // 전체 화면의 30%만큼 여백
+              height: screenHeight * 0.33, // 전체 화면의 30%만큼 여백
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -40,13 +40,13 @@ class HelloPage extends StatelessWidget {
                 width: screenWidth * 0.5,
               ),
             ),
-            SizedBox(height: screenHeight * 0.05), // 이미지와 버튼 사이 여백
+            SizedBox(height: screenHeight * 0.06), // 이미지와 버튼 사이 여백
             Container(
               height: screenHeight * 0.055,
               width: screenWidth * 0.6,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.yellow.shade50,
+                  backgroundColor: Colors.yellow.shade100,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
@@ -58,6 +58,7 @@ class HelloPage extends StatelessWidget {
                 child: Text(
                   "🙏 마음 전하러 가기 🙏",
                   style: TextStyle(
+                    color: Colors.black,
                     fontSize: screenWidth * 0.05, // 버튼 글자 크기를 화면 너비에 맞춤
                     fontWeight: FontWeight.bold,
                   ),
