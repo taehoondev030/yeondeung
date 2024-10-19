@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yeondeung/page/HelloPage.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
+
 import 'SignUpPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,40 +55,52 @@ class _LoginPageState extends State<LoginPage> {
       "password": password,
     };
 
-    // POST 요청 보내기
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(userInfo),
-    );
+    try {
+      // POST 요청 보내기
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(userInfo),
+      );
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      String token = data['token'];
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        String token = data['token'];
 
-      // 토큰을 SharedPreferences에 저장
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', token);
+        // 토큰을 SharedPreferences에 저장
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', token);
 
-      print('User token: $token');
-      Get.to(() => HelloPage());
-    } else if (response.statusCode == 400 || response.statusCode == 401) {
+        print('User token: $token');
+        Get.to(() => HelloPage());
+      } else if (response.statusCode == 400 || response.statusCode == 401) {
+        Get.snackbar(
+          '로그인 실패',
+          '이메일 또는 비밀번호가 잘못되었습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          '로그인 실패',
+          '서버에 문제가 발생했습니다. 나중에 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        print('Failed to login: ${response.statusCode}');
+      }
+    } catch (e) {
+      // 네트워크 오류 처리
       Get.snackbar(
         '로그인 실패',
-        '이메일 또는 비밀번호가 잘못되었습니다.',
+        '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-    } else {
-      Get.snackbar(
-        '로그인 실패',
-        '서버에 문제가 발생했습니다. 나중에 다시 시도해주세요.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      print('Failed to login: ${response.statusCode}');
+      print('Error occurred during login: $e');
     }
   }
 
@@ -115,10 +129,19 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: <Widget>[
               SizedBox(height: screenHeight * 0.2), // 화면 높이에 비례한 여백
-              Center(
-                child: Image(
-                  image: AssetImage('assets/images/logo.webp'),
-                  width: screenWidth * 0.6, // 화면 너비의 60%로 로고 크기 설정
+              Padding(
+                padding: EdgeInsets.fromLTRB(screenWidth * 0.05, screenHeight * 0.01, screenWidth * 0.05, screenHeight * 0.04),
+                child: Center(
+                  child: Text(
+                    "YEON\nDEUNG",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.openSans(
+                      color: Colors.yellow,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.15,
+                      height: screenHeight * 0.0012,
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: screenHeight * 0.05), // 로고와 입력 필드 사이에 여백
@@ -178,6 +201,11 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: screenHeight * 0.015, // 버튼 세로 크기
                                   ),
                                 ),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0), // 덜 둥글게 변경
+                                  ),
+                                ),
                               ),
                               onPressed: () {
                                 loginUser();
@@ -190,6 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
+
                             SizedBox(width: screenWidth * 0.1), // 버튼 사이 여백
                             ElevatedButton(
                               onPressed: () {
@@ -203,6 +232,11 @@ class _LoginPageState extends State<LoginPage> {
                                   EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.05,
                                     vertical: screenHeight * 0.015,
+                                  ),
+                                ),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0), // 덜 둥글게 변경
                                   ),
                                 ),
                               ),
@@ -229,22 +263,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+// 인증된 요청을 보내는 함수에 대한 예외 처리 추가
 void sendAuthenticatedRequest(String token) async {
   String url = 'http://10.0.2.2:8000/api/protected-endpoint/';
 
-  // 토큰을 Authorization 헤더에 포함시켜 요청 보내기
-  var response = await http.get(
-    Uri.parse(url),
-    headers: {
-      "Authorization": "Token $token",
-      "Content-Type": "application/json"
-    },
-  );
+  try {
+    // 토큰을 Authorization 헤더에 포함시켜 요청 보내기
+    var response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Authorization": "Token $token",
+        "Content-Type": "application/json"
+      },
+    );
 
-  // 응답 처리
-  if (response.statusCode == 200) {
-    print('Success: ${response.body}');
-  } else {
-    print('Failed: ${response.statusCode}');
+    // 응답 처리
+    if (response.statusCode == 200) {
+      print('Success: ${response.body}');
+    } else {
+      print('Failed: ${response.statusCode}');
+    }
+  } catch (e) {
+    // 네트워크 오류 처리
+    print('Error occurred during request: $e');
   }
 }

@@ -1,4 +1,4 @@
-#Fri Oct 18 22:29:03 KST 2024
+#Sat Oct 19 22:18:14 KST 2024
 base.0=C\:\\yeondeung\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\yeondeung\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\yeondeung\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex

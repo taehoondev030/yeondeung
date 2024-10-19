@@ -116,6 +116,12 @@
       "languageVersion": "2.15"
     },
     {
+      "name": "google_fonts",
+      "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "html",
       "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/html-0.15.4",
       "packageUri": "lib/",
@@ -186,6 +192,24 @@
       "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "path_provider",
+      "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "path_provider_android",
+      "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.12",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "path_provider_foundation",
+      "rootUri": "file:///C:/Users/taeho/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "path_provider_linux",
@@ -362,7 +386,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-10-14T11:29:10.105102Z",
+  "generated": "2024-10-19T12:15:49.371632Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///C:/flutter",

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:yeondeung/page/HelloPage.dart';
-
 import 'MyHopePage.dart';
 
 class EndPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class EndPage extends StatelessWidget {
     var screenWidth = screenSize.width;
     var screenHeight = screenSize.height;
 
-    return WillPopScope( // PopScope 대신 WillPopScope 사용
+    return WillPopScope(
       onWillPop: () async => false, // 뒤로가기 방지
       child: Scaffold(
         body: Container(
@@ -35,41 +35,62 @@ class EndPage extends StatelessWidget {
               // 상단 여백
               SizedBox(
                 width: double.infinity,
-                height: screenHeight * 0.35, // 화면 높이의 35%만큼 여백
+                height: screenHeight * 0.2,
               ),
-              // 텍스트
-              Text(
-                "여기에 무슨 글을 넣어야하나.",
-                style: TextStyle(
-                  color: Colors.yellow,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth * 0.08, // 화면 너비의 8%로 폰트 크기 설정
+              Padding(
+                padding: EdgeInsets.fromLTRB(screenWidth * 0.05, screenHeight * 0.01, screenWidth * 0.05, screenHeight * 0.04),
+                child: Center(
+                  child: Text(
+                    "YEON\nDEUNG",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.openSans(
+                      color: Colors.yellow,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.15,
+                      height: screenHeight * 0.0012,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
+              ),
+              Text(
+                "당신의 마음이 잘 전해졌습니다.",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: screenWidth * 0.05,
+                ),
               ),
               SizedBox(
-                height: screenHeight * 0.05, // 화면 높이의 5%만큼 여백
+                height: screenHeight * 0.06,
               ),
-              // 버튼들
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Get.offAll(HelloPage());
+                      try {
+                        Get.offAll(HelloPage());
+                      } catch (e) {
+                        Get.snackbar(
+                          '오류 발생',
+                          '처음 화면으로 이동 중 오류가 발생했습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
                     },
                     child: Column(
                       children: [
                         Image.asset(
                           "assets/images/home.png",
-                          width: screenWidth * 0.08, // 화면 너비의 8%로 이미지 크기 설정
+                          width: screenWidth * 0.08,
                         ),
-                        SizedBox(height: screenHeight * 0.01), // 이미지와 텍스트 사이 여백
+                        SizedBox(height: screenHeight * 0.01),
                         Text(
-                          "처음 화면으로\n돌아가기",
+                          "처음 화면으로",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: screenWidth * 0.045, // 화면 너비의 4.5%로 폰트 크기 설정
+                            fontSize: screenWidth * 0.045,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -79,27 +100,37 @@ class EndPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      padding: EdgeInsets.all(screenWidth * 0.05), // 화면 너비에 비례한 패딩 설정
+                      padding: EdgeInsets.all(screenWidth * 0.05),
                       backgroundColor: Colors.yellow.shade100,
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.1), // 버튼 사이에 여백
+                  SizedBox(width: screenWidth * 0.1),
                   ElevatedButton(
                     onPressed: () {
-                      Get.to(() => MyHopePage());
+                      try {
+                        Get.to(() => MyHopePage());
+                      } catch (e) {
+                        Get.snackbar(
+                          '오류 발생',
+                          '내가 띄운 등불 페이지로 이동 중 오류가 발생했습니다.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
                     },
                     child: Column(
                       children: [
                         Image.asset(
                           "assets/images/menu.png",
-                          width: screenWidth * 0.08, // 화면 너비의 8%로 이미지 크기 설정
+                          width: screenWidth * 0.08,
                         ),
-                        SizedBox(height: screenHeight * 0.01), // 이미지와 텍스트 사이 여백
+                        SizedBox(height: screenHeight * 0.01),
                         Text(
-                          "내가 띄운 등불\n보러가기",
+                          "내가 띄운 등불",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: screenWidth * 0.045, // 화면 너비의 4.5%로 폰트 크기 설정
+                            fontSize: screenWidth * 0.045,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -109,7 +140,7 @@ class EndPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      padding: EdgeInsets.all(screenWidth * 0.05), // 화면 너비에 비례한 패딩 설정
+                      padding: EdgeInsets.all(screenWidth * 0.05),
                       backgroundColor: Colors.yellow.shade100,
                     ),
                   ),

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io'; // 추가: 네트워크 오류 처리를 위해
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,24 +29,85 @@ class _SendHopePageState extends State<SendHopePage> {
   Future<void> addHopeToServer(Hope hope) async {
     print("${hope.message}");
 
-    // 토큰 불러오기
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('auth_token'); // 저장된 토큰 가져오기
+    try {
+      // 토큰 불러오기
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('auth_token'); // 저장된 토큰 가져오기
 
-    if (token == null) {
-      print("No token found. Please log in again.");
-      return;
+      if (token == null) {
+        Get.snackbar(
+          '에러',
+          '토큰이 없습니다. 다시 로그인 해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      final response = await http.post(
+        Uri.http('10.0.2.2:8000', 'api/wish/wishes/'),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+        body: jsonEncode(hope),
+      );
+
+      if (response.statusCode == 201) {
+        print("Wish added successfully: ${response.body}");
+      } else if (response.statusCode == 400) {
+        // 400번대 클라이언트 오류
+        Get.snackbar(
+          '에러',
+          '잘못된 요청입니다. 입력을 다시 확인해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        print('Client error: ${response.body}');
+      } else if (response.statusCode == 401) {
+        // 인증 오류
+        Get.snackbar(
+          '에러',
+          '인증에 실패했습니다. 다시 로그인 해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        print('Unauthorized error: ${response.body}');
+      } else {
+        // 그 외 상태 코드 처리
+        Get.snackbar(
+          '에러',
+          '서버 오류가 발생했습니다. 나중에 다시 시도해주세요.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        print('Server error: ${response.body}');
+      }
+    } on SocketException {
+      // 네트워크 오류 처리
+      Get.snackbar(
+        '네트워크 오류',
+        '인터넷 연결을 확인해주세요.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      print('Network error');
+    } catch (e) {
+      // 기타 예외 처리
+      Get.snackbar(
+        '에러',
+        '예기치 못한 오류가 발생했습니다.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      print('An error occurred: $e');
     }
-
-    final response = await http.post(
-      Uri.http('10.0.2.2:8000', 'api/wish/wishes/'),
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Token $token',
-      },
-      body: jsonEncode(hope),
-    );
-    print("response is = ${response.body}");
   }
 
   @override
@@ -76,7 +139,7 @@ class _SendHopePageState extends State<SendHopePage> {
             // 여백 (화면 높이에 맞게 조정)
             SizedBox(
               width: double.infinity,
-              height: screenHeight * 0.17, // 전체 화면 높이의 20%
+              height: screenHeight * 0.17,
             ),
 
             // 뒤로가기 버튼
@@ -94,25 +157,25 @@ class _SendHopePageState extends State<SendHopePage> {
 
             // 노트 부분
             Container(
-              margin: EdgeInsets.all(screenWidth * 0.05), // 화면 너비에 맞게 여백 설정
+              margin: EdgeInsets.all(screenWidth * 0.05),
               child: AnimatedSlide(
                 offset: sending ? Offset(0, 2) : Offset(0, 0), // 컨테이너와 텍스트 필드를 함께 아래로 이동
                 duration: Duration(milliseconds: 1800),
                 curve: Curves.fastOutSlowIn,
                 child: AnimatedContainer(
-                  width: screenWidth * 0.77, // 화면 너비의 80% 사용
-                  height: screenHeight * 0.45, // 화면 높이의 40% 사용
+                  width: screenWidth * 0.77,
+                  height: screenHeight * 0.45,
                   duration: Duration(seconds: 1),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(8.0),
                     color: Colors.yellow.shade200,
                   ),
                   curve: Curves.fastOutSlowIn,
                   child: Padding(
-                    padding: EdgeInsets.all(screenWidth * 0.05), // 텍스트 필드에 여백 추가
+                    padding: EdgeInsets.all(screenWidth * 0.05),
                     child: TextField(
                       controller: _textController,
-                      maxLines: 8,
+                      maxLines: 12,
                       decoration: InputDecoration(
                         hintText: '내용을 입력하세요.',
                         border: InputBorder.none,
@@ -135,12 +198,24 @@ class _SendHopePageState extends State<SendHopePage> {
               duration: Duration(milliseconds: 300),
               child: TextButton(
                 style: TextButton.styleFrom(
+                  padding: EdgeInsets.fromLTRB(screenWidth * 0.03, screenWidth * 0.025, screenWidth * 0.025, screenWidth * 0.03),
                   backgroundColor: Colors.yellow.shade100,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 onPressed: () {
+                  if (_textController.text.isEmpty) {
+                    Get.snackbar(
+                      '경고',
+                      '내용을 입력해주세요.',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
                   setState(() {
                     sending = true; // 컨테이너와 텍스트 필드를 함께 아래로 이동
                     var hope = Hope(
@@ -154,14 +229,11 @@ class _SendHopePageState extends State<SendHopePage> {
                   Future.delayed(Duration(milliseconds: 2000), () {
                     Get.to(() => RisingHopePage());
                   });
-
-                  //print(_textController.text); // 입력된 텍스트 출력
                 },
                 child: Text(
-                  "🙏 등불 띄워 올려 보내기 🙏",
+                  "✨ 하늘로 날려 띄워 보내기 ✨",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.045, // 텍스트 크기를 화면 너비에 맞춤
+                    fontSize: screenWidth * 0.047, // 텍스트 크기를 화면 너비에 맞춤
                     color: Colors.black,
                   ),
                 ),

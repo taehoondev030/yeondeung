@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'LoginPage.dart';
@@ -107,12 +108,20 @@ class _SignUpPageState extends State<SignUpPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: screenHeight * 0.1), // 상단 여백
-                Text(
-                  "연 등",
-                  style: TextStyle(
-                    color: Colors.yellow,
-                    fontSize: screenWidth * 0.15, // 텍스트 크기를 화면 너비에 맞춤
+                SizedBox(height: screenHeight * 0.18), // 상단 여백
+                Padding(
+                  padding: EdgeInsets.fromLTRB(screenWidth * 0.05, screenHeight * 0.01, screenWidth * 0.05, screenHeight * 0.02),
+                  child: Center(
+                    child: Text(
+                      "YEON\nDEUNG",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.openSans(
+                        color: Colors.yellow,
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth * 0.15,
+                        height: screenHeight * 0.0012,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.1), // 텍스트 아래 여백
